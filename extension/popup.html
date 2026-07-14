@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Page Assistant</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header>
+        <p class="eyebrow">Demo mode</p>
+        <h1>AI Page Assistant</h1>
+        <p class="notice">Uses visible page text only. Suggestions are shown for review and never auto-submit forms.</p>
+      </header>
+
+      <section class="actions" aria-label="Assistant actions">
+        <button id="analysePage" type="button">Analyse page</button>
+        <button id="buildTasks" type="button">Build checklist</button>
+        <button id="detectForms" type="button">Suggest form drafts</button>
+      </section>
+
+      <section class="panel">
+        <h2>Summary</h2>
+        <p id="summaryOutput">Run page analysis to generate a short rule-based summary.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Checklist</h2>
+        <ul id="taskOutput"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Form suggestions</h2>
+        <p class="microcopy">Review each suggestion before inserting it. Nothing is submitted automatically.</p>
+        <div id="formOutput"></div>
+      </section>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "AI Browser Extension Demo",
+  "description": "Demo-safe AI-assisted page analysis, task support and reviewed form suggestions.",
+  "version": "0.1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Page Assistant"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["activeTab", "storage"],
+  "options_page": "options.html"
+}

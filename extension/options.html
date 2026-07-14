@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Page Assistant Options</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <h1>Options</h1>
+      <section class="panel">
+        <label for="backendUrl">Optional backend URL</label>
+        <textarea id="backendUrl" rows="1">http://localhost:8000</textarea>
+        <p class="microcopy">Demo mode works without a backend or LLM API key.</p>
+        <button id="saveOptions" type="button">Save</button>
+        <p id="saveStatus" class="status"></p>
+      </section>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
