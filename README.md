@@ -32,6 +32,7 @@ Web pages often contain long instructions, calls to action and forms. Users need
 - Rule-based task checklist extraction
 - Form field detection
 - Reviewed draft form suggestions
+- Backend validation that rejects oversized page text and password-field suggestions
 - Privacy and safety notice
 - Optional FastAPI backend endpoints
 - Demo mode with no paid LLM API key

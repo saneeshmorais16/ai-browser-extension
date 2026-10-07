@@ -1,9 +1,14 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
+SupportedFieldType = Literal["text", "email", "search", "url", "tel", "textarea"]
+
+
 class PageRequest(BaseModel):
-    title: str = ""
-    url: str = ""
+    title: str = Field("", max_length=300)
+    url: str = Field("", max_length=2000)
     text: str = Field(default="", max_length=20000)
 
 
@@ -19,11 +24,12 @@ class TasksResponse(BaseModel):
 
 
 class FormSuggestionRequest(BaseModel):
-    label: str = ""
-    name: str = ""
-    placeholder: str = ""
-    field_type: str = "text"
-    page_context: str = ""
+    label: str = Field("", max_length=300)
+    name: str = Field("", max_length=120)
+    placeholder: str = Field("", max_length=300)
+    # Only accept editable text-like fields. Passwords and hidden fields stay out of scope.
+    field_type: SupportedFieldType = "text"
+    page_context: str = Field("", max_length=20000)
 
 
 class FormSuggestionResponse(BaseModel):

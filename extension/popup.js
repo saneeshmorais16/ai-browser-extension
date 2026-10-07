@@ -34,45 +34,66 @@ async function sendToContent(type, payload = {}) {
   return chrome.tabs.sendMessage(tab.id, { type, ...payload });
 }
 
+function showError(target, message) {
+  target.textContent = message;
+  target.className = "status";
+}
+
 document.getElementById("analysePage").addEventListener("click", async () => {
-  summaryOutput.textContent = "Analysing visible page text...";
-  const payload = await sendToContent("EXTRACT_PAGE");
-  summaryOutput.textContent = fallbackSummary(payload);
+  try {
+    summaryOutput.textContent = "Analysing visible page text...";
+    const payload = await sendToContent("EXTRACT_PAGE");
+    summaryOutput.textContent = fallbackSummary(payload);
+  } catch (_error) {
+    showError(summaryOutput, "This page cannot be analysed by the extension. Try a normal web page or the demo page.");
+  }
 });
 
 document.getElementById("buildTasks").addEventListener("click", async () => {
-  taskOutput.innerHTML = "";
-  const payload = await sendToContent("EXTRACT_PAGE");
-  fallbackTasks(payload.text).forEach((task) => {
+  try {
+    taskOutput.innerHTML = "";
+    const payload = await sendToContent("EXTRACT_PAGE");
+    fallbackTasks(payload.text).forEach((task) => {
+      const item = document.createElement("li");
+      item.textContent = task;
+      taskOutput.appendChild(item);
+    });
+  } catch (_error) {
+    taskOutput.innerHTML = "";
     const item = document.createElement("li");
-    item.textContent = task;
+    item.textContent = "Unable to read this page. Open the demo page or another normal web page and try again.";
     taskOutput.appendChild(item);
-  });
+  }
 });
 
 document.getElementById("detectForms").addEventListener("click", async () => {
-  formOutput.innerHTML = "<p class='status'>Looking for visible form fields...</p>";
-  const payload = await sendToContent("DETECT_FORMS");
-  formOutput.innerHTML = "";
-  if (!payload.fields.length) {
-    formOutput.innerHTML = "<p class='status'>No editable form fields were found on this page.</p>";
-    return;
-  }
-  payload.fields.forEach((field) => {
-    const card = document.createElement("div");
-    card.className = "form-card";
-    const label = document.createElement("label");
-    label.textContent = field.label || field.name || field.selector;
-    const textarea = document.createElement("textarea");
-    textarea.value = draftForField(field);
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "secondary";
-    button.textContent = "Insert reviewed text";
-    button.addEventListener("click", () => {
-      sendToContent("INSERT_FORM_VALUE", { selector: field.selector, value: textarea.value });
+  try {
+    formOutput.innerHTML = "<p class='status'>Looking for visible form fields...</p>";
+    const payload = await sendToContent("DETECT_FORMS");
+    formOutput.innerHTML = "";
+    if (!payload.fields.length) {
+      formOutput.innerHTML = "<p class='status'>No editable form fields were found on this page.</p>";
+      return;
+    }
+    payload.fields.forEach((field) => {
+      const card = document.createElement("div");
+      card.className = "form-card";
+      const label = document.createElement("label");
+      label.textContent = field.label || field.name || field.selector;
+      const textarea = document.createElement("textarea");
+      textarea.value = draftForField(field);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "secondary";
+      button.textContent = "Insert reviewed text";
+      button.addEventListener("click", () => {
+        // The extension only inserts text after this explicit user action.
+        sendToContent("INSERT_FORM_VALUE", { selector: field.selector, value: textarea.value });
+      });
+      card.append(label, textarea, button);
+      formOutput.appendChild(card);
     });
-    card.append(label, textarea, button);
-    formOutput.appendChild(card);
-  });
+  } catch (_error) {
+    formOutput.innerHTML = "<p class='status'>Forms cannot be inspected on this page.</p>";
+  }
 });

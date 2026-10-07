@@ -29,3 +29,13 @@ def test_form_suggestion_never_auto_submits():
     assert response.status_code == 200
     assert response.json()["requires_review"] is True
     assert response.json()["auto_submit"] is False
+
+
+def test_rejects_overlong_page_text():
+    response = client.post("/summarise", json={"title": "Demo", "text": "x" * 20001})
+    assert response.status_code == 422
+
+
+def test_rejects_password_field_suggestions():
+    response = client.post("/suggest-form-answer", json={"label": "Password", "field_type": "password"})
+    assert response.status_code == 422
